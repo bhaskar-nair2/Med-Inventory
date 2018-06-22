@@ -22,12 +22,11 @@ class AutocompleteEntry(Entry):
         self.bind("<Right>", self.selection)
         self.bind("<Up>", self.up)
         self.bind("<Down>", self.down)
+        self.bind("<Return>",self.selection)
 
         self.lb_up = False
 
     def changed(self, name, index, mode):
-        print("change")
-
         if self.var.get() == '':
             self.lb.destroy()
             self.lb_up = False
@@ -50,8 +49,6 @@ class AutocompleteEntry(Entry):
                     self.lb_up = False
 
     def selection(self, event):
-        print("selection")
-
         if self.lb_up:
             self.var.set(self.lb.get(ACTIVE))
             self.lb.destroy()
@@ -75,17 +72,16 @@ class AutocompleteEntry(Entry):
 
         if self.lb_up:
             if self.lb.curselection() == ():
-                index = '0'
+                index = '-1'
             else:
                 index = self.lb.curselection()[0]
             if index != END:
                 self.lb.selection_clear(first=index)
-                index = str(int(index) + 1)
+                index = str(int(index)+1)
                 self.lb.selection_set(first=index)
                 self.lb.activate(index)
 
     def comparison(self):
-        print("compare")
         pattern = re.compile('.*' + self.var.get() + '.*')
         return [w for w in self.lista if re.match(pattern, w)]
 
