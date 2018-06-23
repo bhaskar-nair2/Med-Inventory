@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, Menu, messagebox
+from tkinter import ttk, Menu, messagebox, Text
 import sqlite3 as sql
 import threading
 import autofill as autoe
@@ -13,10 +13,15 @@ class GUI:
         self.loadicons()
 
         # Styles
-        c0 = '#F0F4F5'
-        c1 = '#8aa4ff'
+        c0_5 = '#F0F4F5'
+        c0 = '#a1e0ff'
+        c1_2 = '#8aa4ff'
+        c1 = '#8bc3f6'
+        c1_3 = '#51acff'
         c1_5 = '#009ABB'
         c2 = '#5086c1'
+        c2_2 = '#2f86ff'
+        c2_3 = '#0051ff'
         c2_5 = '#007C92'
         c3 = '#5076b0'
         c4 = '#49598c'
@@ -30,7 +35,8 @@ class GUI:
         self.style.configure('Details.TFrame', background=c1)
         self.style.configure('TLabel', background=c1, foreground=txt2)
         self.style.configure('Det.TLabel', background=c1, foreground=txt1)
-        self.style.configure('Main.TLabel', background=c0, foreground=txt2)
+        self.style.configure('Main.TLabel', background=c0)
+        self.style.configure('TButton', foreground=c1, background=c1)
 
         # Global Variables
         self.db = './data/db/medinv'
@@ -50,14 +56,26 @@ class GUI:
         self.mf.rowconfigure(1, weight=1)
         self.mf.columnconfigure(1, weight=1)
 
+        # Low Quantity Frame
+        self.lqf=ttk.Labelframe(self.root,text='Items low in Quantity',style='Main.TFrame',relief='groove')
+        self.lqf.grid(row=0,column=1,rowspan=5)
+        self.lqf.rowconfigure(1, weight=1)
+        self.lqf.columnconfigure(1,weight=1)
+
+        #About to expire frame
+        self.expf=ttk.Labelframe(self.root,text='Items about to expire',style='Main.TFrame',relief='groove')
+        self.expf.grid(row=0,column=3,rowspan=5)
+        self.expf.rowconfigure(1, weight=1)
+        self.expf.columnconfigure(1, weight=1)
+
+
         # details frame
         self.df = ttk.Frame(self.mf, padding='5 5 5 5', style='Details.TFrame', relief='groove')
         self.df.rowconfigure(1, weight=1)
         self.df.columnconfigure(1, weight=1)
 
         # Static labels
-        ttk.Label(self.mf, text='Medicine Name', style='Main.TLabel').grid(row=0, column=0, sticky='nw', padx=1,
-                                                                           pady=20)
+        ttk.Label(self.mf, text='Medicine Name', style='Main.TLabel').grid(row=0, column=0, sticky='nw', padx=1,pady=20)
         ttk.Label(self.df, text="Amount Available:").grid(row=0, column=0, sticky='nw', pady=5)
         ttk.Label(self.df, text="MMF:").grid(row=0, column=3, sticky='nw', pady=5)
         ttk.Label(self.df, text="Nearest Expiry:").grid(row=1, column=0, sticky='nw', pady=5)
@@ -71,24 +89,29 @@ class GUI:
 
         # Components
         self.pillEN = autoe.AutocompleteEntry(self.lista, self.mf)
-
         self.addBut = ttk.Button(self.mf, image=self.plusIco)
         self.subBut = ttk.Button(self.mf, image=self.minusIco)
+        self.log=Text(self.mf,width=47,height=20)
+        #self.log.yview_pickplace("end")
 
         # Seperators
-        ttk.Separator(self.df, orient='vertical').grid(row=0, column=2, rowspan=4, sticky='nse', padx=5)
+        ttk.Separator(self.df, orient='vertical').grid(row=0, column=2, rowspan=4, sticky='nse', padx=20)
 
         # Design Main Frame
         self.pillEN.grid(row=0, column=1, padx=1, pady=20, sticky='nw')
-        self.df.grid(row=1, column=0, columnspan=8,rowspan=5, sticky='nw')
+        self.df.grid(row=1, column=0, columnspan=8, rowspan=5, sticky='nw', padx=3, pady=2)
         self.addBut.grid(row=1, column=9, padx=2, sticky='nw')
         self.subBut.grid(row=2, column=9, padx=2, sticky='nw')
+        self.log.grid(row=3,column=0,columnspan=12,rowspan=5,sticky='nw',pady=5,padx=2)
 
         # Design Details Frame
         self.avilLB.grid(row=0, column=1, padx=5, pady=5, sticky='nw')
         self.expLB.grid(row=1, column=1, padx=5, pady=5, sticky='nw')
         self.mmfLB.grid(row=0, column=4, padx=5, pady=5, sticky='nw')
         self.oldbtchLB.grid(row=1, column=4, padx=5, pady=5, sticky='nw')
+
+        # Design, Low quantity frame
+
 
         # Binds/Focus
         self.pillEN.focus()
