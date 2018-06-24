@@ -28,8 +28,11 @@ class AutocompleteEntry(Entry):
 
     def changed(self, name, index, mode):
         if self.var.get() == '':
-            self.lb.destroy()
-            self.lb_up = False
+            try:
+                self.lb.destroy()
+                self.lb_up = False
+            except AttributeError:
+                pass
         else:
             words = self.comparison()
             if words:
@@ -82,8 +85,9 @@ class AutocompleteEntry(Entry):
                 self.lb.activate(index)
 
     def comparison(self):
-        pattern = re.compile('.*' + self.var.get() + '.*')
-        return [w for w in self.lista if re.match(pattern, w)]
+        pattern = re.compile('.*' + str(self.var.get()).lower() + '.*')
+        print(pattern)
+        return [w for w in self.lista if re.match(pattern, str.lower(w))]
 
 
 if __name__ == '__main__':
